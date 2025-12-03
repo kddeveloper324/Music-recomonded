@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicMatch AI: Project Documentation</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mermaid JS for Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #1DB954; /* Spotify Green */
+            --primary-glow: rgba(29, 185, 84, 0.4);
+            --dark: #0e0e0e;
+            --dark-card: #181818;
+            --text-main: #FFFFFF;
+            --text-muted: #B3B3B3;
+            --gradient-bg: radial-gradient(circle at 50% 0%, #2a2a2a 0%, #0e0e0e 70%);
+        }
+
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            background-image: var(--gradient-bg);
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; margin-top: 0; }
+
+        /* --- 3D Card Effect --- */
+        .card-3d {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px -10px var(--primary-glow);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            background: rgba(14, 14, 14, 0.8);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav ul { list-style: none; display: flex; gap: 30px; }
+        nav a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: var(--primary); }
+
+        /* --- Header --- */
+        header {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #b3b3b3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-badge {
+            background: rgba(29, 185, 84, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--primary-glow);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-glow {
+            padding: 1rem 3rem;
+            background-color: var(--primary);
+            color: #000;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-glow:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--primary-glow); background-color: #1ed760; }
+
+        /* --- Sections --- */
+        section { padding: 6rem 10%; }
+        .section-title { font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 15px; }
+        .section-title i { color: var(--primary); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+
+        /* --- Timeline (Developer Journey) --- */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 11px; /* Center on the line */
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .timeline-content {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+
+        .timeline-content:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.04);
+            border-color: var(--primary);
+        }
+
+        .tag {
+            background: rgba(29, 185, 84, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        /* --- Code Blocks --- */
+        pre {
+            background: #111;
+            padding: 2rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+        code { font-family: 'Courier New', monospace; color: #e0e0e0; }
+        .keyword { color: #c678dd; } .function { color: #61afef; } .string { color: #98c379; } .comment { color: #5c6370; }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 4rem 10%;
+            border-top: 1px solid #333;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .mermaid {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'dark', securityLevel: 'loose'});</script>
+
+    <nav>
+        <div class="logo"><i class="fas fa-music"></i> MusicMatch AI</div>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#journey">Journey</a></li>
+            <li><a href="#future">Roadmap</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <div class="hero-badge">Advanced Portfolio Documentation</div>
+        <h1>MusicMatch AI:<br>Intelligent Recommendation</h1>
+        <p>A sophisticated content-based recommendation engine powered by NLP and Spotify, bridging the gap between raw data and immersive user experience.</p>
+        <a href="#architecture" class="btn-glow">Explore Architecture</a>
+    </header>
+
+    <section id="overview">
+        <h2 class="section-title"><i class="fas fa-info-circle"></i> Project Summary & Advantages</h2>
+        <div class="grid">
+            <div class="card-3d">
+                <h3><i class="fas fa-check-circle" style="color:var(--primary);"></i> The Core Problem</h3>
+                <p>Traditional "Collaborative Filtering" requires massive user history data. New apps suffer from the <strong>Cold Start Problem</strong>—they can't recommend anything until users interact.</p>
+            </div>
+            <div class="card-3d">
+                <h3><i class="fas fa-lightbulb" style="color:var(--primary);"></i> The Solution</h3>
+                <p><strong>MusicMatch AI</strong> solves this by analyzing the <em>content</em> (lyrics) directly. It "reads" songs to understand semantic similarity, enabling instant recommendations for zero-history users.</p>
+            </div>
+             <div class="card-3d">
+                <h3><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Advantages</h3>
+                <ul style="list-style: none; padding: 0; color: var(--text-muted);">
+                    <li>• <strong>Privacy First:</strong> No user tracking required.</li>
+                    <li>• <strong>Instant Utility:</strong> Works immediately for new users.</li>
+                    <li>• <strong>Deep Discovery:</strong> Finds lyrically similar songs across genres.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture">
+        <h2 class="section-title"><i class="fas fa-project-diagram"></i> Data Flow Architecture</h2>
+        <p style="margin-bottom: 2rem; color: var(--text-muted);">The system utilizes a hybrid "Offline-Online" architecture to ensure sub-100ms response times while handling heavy NLP computations.</p>
+        
+        <div class="card-3d">
+            <div class="mermaid">
+            flowchart TD
+                subgraph Data_Pipeline [Phase 1: Offline Data Engineering]
+                    A[Raw CSV Dataset] -->|Preprocessing| B(Text Cleaning & Stemming)
+                    B -->|TF-IDF Vectorization| C{Vector Space Model}
+                    C -->|Cosine Similarity| D[(similarity.pkl)]
+                    B -->|Metadata Extraction| E[(df.pkl)]
+                end
+
+                subgraph Runtime_App [Phase 2: Live Streamlit Application]
+                    User((User)) -->|Selects Song| UI[Streamlit Interface]
+                    UI -->|Lookup Index| E
+                    UI -->|Query Vectors| D
+                    D -->|Return Top 5 Indices| Engine[Recommender Logic]
+                    
+                    Engine -->|Fetch Metadata| API[Spotify Web API]
+                    API -->|Return JSON| Assets[Album Art, Audio, Stats]
+                    
+                    Assets -->|Render| Display[Hero UI & Cards]
+                end
+
+                style Data_Pipeline fill:#1a1a1a,stroke:#444,stroke-width:2px
+                style Runtime_App fill:#0f1f15,stroke:#1DB954,stroke-width:2px
+                style D fill:#333,stroke:#fff
+                style E fill:#333,stroke:#fff
+                style API fill:#1DB954,color:#000,stroke:#fff
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <h2 class="section-title"><i class="fas fa-star"></i> Advanced Functionality</h2>
+        <div class="grid">
+            <div class="card-3d">
+                <i class="fas fa-brain fa-2x" style="color:var(--primary); margin-bottom:1rem;"></i>
+                <h3>NLP Core Engine</h3>
+                <p>Uses TF-IDF Vectorization to convert text into a 5000-dimensional mathematical space, allowing for precise cosine similarity calculations between songs.</p>
+            </div>
+            <div class="card-3d">
+                <i class="fab fa-spotify fa-2x" style="color:var(--primary); margin-bottom:1rem;"></i>
+                <h3>Dynamic API Enrichment</h3>
+                <p>The system doesn't just show text. It dynamically queries Spotify to fetch high-res 640x640 album art, popularity metrics, and 30-second audio previews.</p>
+            </div>
+            <div class="card-3d">
+                <i class="fas fa-tachometer-alt fa-2x" style="color:var(--primary); margin-bottom:1rem;"></i>
+                <h3>Optimized Latency</h3>
+                <p>By pre-computing the similarity matrix (O(n^2)) offline, the runtime complexity is reduced to O(1) lookup, ensuring instant results.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="journey">
+        <h2 class="section-title"><i class="fas fa-road"></i> The Developer Journey</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <span class="tag">Phase 1: Data Engineering</span>
+                    <h3>Data Acquisition & Cleaning</h3>
+                    <p>Started with the <strong>Spotify Million Song Dataset</strong>. Utilizing <code>NLTK</code>, I stripped noise, removed stop-words, and performed stemming to isolate the semantic meaning of the lyrics.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <span class="tag">Phase 2: Machine Learning</span>
+                    <h3>Vectorization & Similarity</h3>
+                    <p>Implemented <strong>TF-IDF Vectorization</strong> to quantify lyrical content. Applied <strong>Cosine Similarity</strong> to calculate angular distance between song vectors, creating the recommendation "brain".</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <span class="tag">Phase 3: Frontend Prototype</span>
+                    <h3>Building the Interface</h3>
+                    <p>Chose <strong>Streamlit</strong> for rapid development. The initial prototype proved the ML concept but lacked visual appeal.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <span class="tag">Phase 4: API Integration</span>
+                    <h3>Connecting the Ecosystem</h3>
+                    <p>Integrated <code>spotipy</code> to fetch live assets. This required robust error handling (Try/Except blocks) to ensure the app degrades gracefully if Spotify API limits are hit.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="future">
+        <h2 class="section-title"><i class="fas fa-rocket"></i> Future Roadmap & Advanced Features</h2>
+        <div class="grid">
+            <div class="card-3d">
+                <h3><i class="fas fa-smile" style="color:var(--primary);"></i> Sentiment Analysis</h3>
+                <p><strong>Next Step:</strong> Integrate VADER or TextBlob to analyze the <em>mood</em> of the lyrics (Happy vs. Sad) and allow users to filter recommendations by emotional tone.</p>
+            </div>
+            <div class="card-3d">
+                <h3><i class="fas fa-users" style="color:var(--primary);"></i> Hybrid Filtering</h3>
+                <p><strong>Next Step:</strong> Combine the current Content-Based engine with Collaborative Filtering (User-Item) to create a weighted hybrid model for even higher accuracy.</p>
+            </div>
+            <div class="card-3d">
+                <h3><i class="fas fa-wave-square" style="color:var(--primary);"></i> Audio Feature Analysis</h3>
+                <p><strong>Next Step:</strong> Use Spotify's audio features endpoint (tempo, danceability, acousticness) to refine matches beyond just lyrics.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Developed with <i class="fas fa-heart" style="color: var(--primary);"></i> using Python & Streamlit.</p>
+        <p>Documentation generated for Portfolio inclusion.</p>
+    </footer>
+
+</body>
+</html>
